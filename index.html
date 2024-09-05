@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lucky lottery number generator for non-scammers</title>
+</head>
+
+<body>
+    <script>
+        function shuffle(o) {
+            for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+            return o;
+        };
+
+        function showMessage(msg) {
+            var resultText = document.getElementById('resultText');
+            resultText.innerText = msg;
+        }
+        
+        function generate() {
+            var numTickets = +document.getElementById('numTickets').value;
+            var digits = +document.getElementById('digits').value;
+            var min = +document.getElementById('min').value;
+            var max = +document.getElementById('max').value;
+            var hasDuplicates = document.getElementById('useDuplicates').checked;
+
+            if (min >= max) {
+                showMessage("Minimum must be lower than maximum.");
+                return;
+            }
+
+            var nums = new Set();
+            var allDigits = Array.from({length: max - min + 1}, (_, i) => i + min);
+            var tries = numTickets * 2;
+            while (nums.size < numTickets) {
+                var numStr = "";
+                var random = shuffle(allDigits)
+                for (i = 0; i < digits; i++) {
+                    if (hasDuplicates) shuffle(allDigits);
+                    numStr += random[i];
+                }
+                nums.add(numStr);
+
+                tries--;
+                if (tries == 0)
+                {
+                    showMessage("Not enough digits.");
+                    return;
+                }
+            }
+            
+            showMessage(nums.size + " ticket(s) generated.");
+            var output = document.getElementById('output');
+            output.innerHTML = "";
+            nums.forEach((num) => output.append(num + "\n"));
+        }
+
+        function copy() {
+            var output = document.getElementById("output");
+            navigator.clipboard.writeText(output.innerText);
+        }
+    </script>
+
+    <h1>lucky lottery number generator for non-scammers</h1>
+    <form>
+        <label for="numTickets">Number of tickets:</label>
+        <input type="number" id="numTickets" name="numTickets" min="1" max="1000" value="1"><br><br>
+
+        <label for="digits">Number of digits per ticket:</label>
+        <input type="number" id="digits" name="digits" min="1" max="10" value="3"><br><br>
+        
+        <label for="min">Digit minimum value:</label>
+        <input type="number" id="min" name="min" min="0" max="9" value="0"><br><br>
+
+        <label for="max">Digit maximum value:</label>
+        <input type="number" id="max" name="max" min="0" max="9" value="9"><br><br>
+
+        <label for="useDuplicates">Use duplicate digits?</label>
+        <input type="checkbox" id="useDuplicates" name="useDuplicates"><br><br>
+
+        <br>
+        <input type="button" value="GENERATE!" onclick="generate()">
+        <hr>
+        <div>
+            <p id="resultText"></p>
+            <input type="button" value="Copy to clipboard" onclick="copy()">
+        </div>
+        <br>
+        <div id="output">
+
+        </div>
+    </form>
+
+</body>
+</html> 
