@@ -23,10 +23,11 @@
             var digits = +document.getElementById('digits').value;
             var min = +document.getElementById('min').value;
             var max = +document.getElementById('max').value;
-            var hasDuplicates = document.getElementById('useDuplicates').checked;
+            var useDuplicates = document.getElementById('useDuplicates').checked;
+            var useNewline = document.getElementById('useNewline').checked;
 
             if (min >= max) {
-                showMessage("Minimum must be lower than maximum.");
+                showMessage('Minimum must be lower than maximum.');
                 return;
             }
 
@@ -34,10 +35,10 @@
             var allDigits = Array.from({length: max - min + 1}, (_, i) => i + min);
             var tries = numTickets * 2;
             while (nums.size < numTickets) {
-                var numStr = "";
+                var numStr = '';
                 var random = shuffle(allDigits)
                 for (i = 0; i < digits; i++) {
-                    if (hasDuplicates) shuffle(allDigits);
+                    if (useDuplicates) shuffle(allDigits);
                     numStr += random[i];
                 }
                 nums.add(numStr);
@@ -45,19 +46,19 @@
                 tries--;
                 if (tries == 0)
                 {
-                    showMessage("Not enough digits.");
+                    showMessage('Not enough digits.');
                     return;
                 }
             }
             
-            showMessage(nums.size + " ticket(s) generated.");
+            showMessage(nums.size + ' ticket(s) generated.');
             var output = document.getElementById('output');
-            output.innerHTML = "";
-            nums.forEach((num) => output.append(num + "\n"));
+            console.log(nums)
+            output.innerText = Array.from(nums).join(useNewline ? '\n' : ' ');
         }
 
         function copy() {
-            var output = document.getElementById("output");
+            var output = document.getElementById('output');
             navigator.clipboard.writeText(output.innerText);
         }
     </script>
@@ -77,9 +78,11 @@
         <input type="number" id="max" name="max" min="0" max="9" value="9"><br><br>
 
         <label for="useDuplicates">Use duplicate digits?</label>
-        <input type="checkbox" id="useDuplicates" name="useDuplicates"><br><br>
+        <input type="checkbox" id="useDuplicates" name="useDuplicates" checked><br><br>
 
         <br>
+        <label for="useNewline"> Separate by newline?</label>
+        <input type="checkbox" id="useNewline" name="useNewline" checked><br><br>
         <input type="button" value="GENERATE!" onclick="generate()">
         <hr>
         <div>
